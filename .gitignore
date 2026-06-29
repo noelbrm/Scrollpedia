@@ -1,0 +1,26 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Local dev and preview logs
+vite-*.log
+vite-*.err.log
+http-*.log
+http-*.err.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Browser automation / local inspection artifacts
+.playwright-mcp/
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

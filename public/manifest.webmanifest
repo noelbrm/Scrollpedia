@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "Scrollpedia",
+  "short_name": "Scrollpedia",
+  "description": "A mobile vertical feed for visual Wikipedia discoveries in German and English.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "categories": ["education", "news", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
