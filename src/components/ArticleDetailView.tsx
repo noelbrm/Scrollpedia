@@ -69,7 +69,7 @@ export default function ArticleDetailView({
         isLightMode ? 'bg-stone-100 text-neutral-950' : 'bg-neutral-950 text-white'
       }`}
     >
-      <div className="mx-auto min-h-dvh w-full max-w-md px-5 pb-10 pt-5">
+      <div className="mx-auto min-h-dvh w-full px-5 pb-10 pt-5 md:w-[767px]">
         <div
           className={`sticky top-0 z-20 -mx-5 mb-6 flex items-center justify-between px-5 pb-4 pt-3 backdrop-blur transition-colors ${
             isLightMode
@@ -219,20 +219,24 @@ export default function ArticleDetailView({
           className="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 p-2 sm:p-4"
           onClick={() => setExpandedImage(null)}
         >
-          <button
-            type="button"
-            onClick={() => setExpandedImage(null)}
-            className="absolute right-4 top-4 inline-flex items-center justify-center rounded-full border border-white/10 bg-white/10 p-2 text-white transition-colors hover:bg-white/15"
-            aria-label={copy.aboutClose}
-          >
-            <X className="size-5" />
-          </button>
-          <img
-            src={expandedImage}
-            alt={article.title}
-            className="max-h-[96vh] max-w-[96vw] object-contain"
+          <div
+            className="relative flex w-full items-center justify-center md:w-[767px]"
             onClick={(event) => event.stopPropagation()}
-          />
+          >
+            <button
+              type="button"
+              onClick={() => setExpandedImage(null)}
+              className="absolute right-2 top-2 z-10 inline-flex items-center justify-center rounded-full border border-white/10 bg-white/10 p-2 text-white transition-colors hover:bg-white/15 sm:right-4 sm:top-4"
+              aria-label={copy.aboutClose}
+            >
+              <X className="size-5" />
+            </button>
+            <img
+              src={expandedImage}
+              alt={article.title}
+              className="max-h-[96vh] w-full object-contain"
+            />
+          </div>
         </div>
       ) : null}
     </section>

@@ -60,7 +60,7 @@ const ROWS = [
 
 export default function GenreSelectionBackdrop() {
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden md:inset-y-0 md:left-1/2 md:right-auto md:w-[767px] md:-translate-x-1/2">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_42%)]" />
       <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 flex-col gap-6 px-2 sm:gap-7 sm:px-4">
         {ROWS.map((row, rowIndex) => {
@@ -69,10 +69,10 @@ export default function GenreSelectionBackdrop() {
           return (
             <div
               key={`${row.direction}-${rowIndex}`}
-              className="relative left-1/2 w-[138%] -translate-x-1/2 overflow-hidden py-1 md:w-[34rem]"
+              className="relative left-1/2 w-[138%] -translate-x-1/2 overflow-hidden py-1 md:w-[1058px]"
             >
-              <div className="absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-neutral-950 via-neutral-950/65 to-transparent" />
-              <div className="absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-neutral-950 via-neutral-950/65 to-transparent" />
+              <div className="absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-neutral-950 via-neutral-950/65 to-transparent md:hidden" />
+              <div className="absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-neutral-950 via-neutral-950/65 to-transparent md:hidden" />
               <div
                 className={`genre-backdrop-strip flex w-max px-3 sm:px-4 lg:px-0 ${
                   row.direction === 'right'
