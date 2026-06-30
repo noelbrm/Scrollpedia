@@ -1,11 +1,15 @@
+<p align="center">
+  <img src="public/icons/icon.svg" width="250" alt="app icon">
+</p>
+
 # Scrollpedia
 
 Scrollpedia is a mobile-first React/Vite PWA that feels like a TikTok-style scrolling app, except the content is informative Wikipedia articles.
 
-The app supports German and English, includes installability through `manifest.webmanifest`, and offers two separate browsing modes:
+The app supports German and English, includes installability through manifest.webmanifest, and offers two separate browsing modes:
 
 - topic-based discovery feed
-- `Popular Wikipedia Pages` based on Wikimedia most-viewed data
+- Popular Wikipedia Pages based on Wikimedia most-viewed data
 
 ## Features
 
@@ -22,7 +26,6 @@ The app supports German and English, includes installability through `manifest.w
 - TypeScript
 - Vite
 - Tailwind CSS
-- Framer Motion
 - Wikimedia / Wikipedia APIs
 
 ## Getting Started
@@ -57,8 +60,3 @@ npm run build
 - `dist/` generated production build output
 - `index.html` app entry HTML
 - `package.json` scripts and dependencies
-
-## Notes
-
-- `dist/` is generated output and should not be edited manually.
-- The README reflects the current implementation only and does not assume any backend, auth, or analytics setup.
