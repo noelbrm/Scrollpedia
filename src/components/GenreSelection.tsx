@@ -1,19 +1,19 @@
-import type { TopicKey } from '../data/topics';
-import { topicEntries } from '../data/topics';
-import { uiCopy } from '../content/ui';
-import type { FeedMode, LanguageCode } from '../types/wiki';
-import AboutButton from './AboutButton';
+import type {TopicKey} from '../data/topics';
+import {topicEntries} from '../data/topics';
+import {uiCopy} from '../content/ui';
+import type {FeedMode, LanguageCode} from '../types/wiki';
+import AboutView from './AboutView';
 import GenreSelectionBackdrop from './GenreSelectionBackdrop';
 import LanguageSwitcher from './LanguageSwitcher';
 
 type GenreSelectionProps = {
-    feedMode: FeedMode;
-    language: LanguageCode;
-    onFeedModeChange: (feedMode: FeedMode) => void;
-    onLanguageChange: (language: LanguageCode) => void;
-    selectedTopics: TopicKey[];
-    onChange: (topics: TopicKey[]) => void;
-    onContinue: () => void;
+  feedMode: FeedMode;
+  language: LanguageCode;
+  onFeedModeChange: (feedMode: FeedMode) => void;
+  onLanguageChange: (language: LanguageCode) => void;
+  selectedTopics: TopicKey[];
+  onChange: (topics: TopicKey[]) => void;
+  onContinue: () => void;
 };
 
 export default function GenreSelection({
@@ -55,13 +55,13 @@ export default function GenreSelection({
       <div className="relative z-10 flex min-h-dvh flex-col">
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pt-12 sm:pt-16">
           <div className="flex items-center justify-between gap-2">
-            <AboutButton language={language} />
+            <AboutView language={language} />
             <LanguageSwitcher language={language} onChange={onLanguageChange} />
           </div>
 
           <div className="flex flex-1 items-center justify-center pb-6">
             <div className="w-full rounded-[2rem] border border-white/10 bg-black/30 px-5 py-7 shadow-[0_30px_90px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:px-6 sm:py-8">
-              <h1 className="mx-auto max-w-[20ch] text-center font-['Inter','Avenir_Next','Segoe_UI',sans-serif] text-[1.8rem] font-semibold leading-[0.95] tracking-[-0.03em] text-white [text-shadow:0_10px_40px_rgba(0,0,0,0.46)] sm:text-[2.2rem]">
+              <h1 className="mx-auto max-w-[20ch] text-center font-['Fraunces','Iowan_Old_Style','Palatino_Linotype','Book_Antiqua',Palatino,serif] text-[1.8rem] font-semibold leading-[0.95] tracking-[-0.03em] text-white [text-shadow:0_10px_40px_rgba(0,0,0,0.46)] sm:text-[2.2rem]">
                 {copy.genreHeading}
               </h1>
 
