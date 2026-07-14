@@ -7,6 +7,7 @@ const GITHUB_URL = 'https://github.com/noelbrm/Scrollpedia';
 
 type AboutButtonProps = {
     className?: string;
+    label?: string;
     language: LanguageCode;
 };
 
@@ -26,12 +27,13 @@ type AboutCopy = (typeof uiCopy)[LanguageCode];
 
 export default function AboutView({
                                       className,
+                                      label,
                                       language,
                                   }: AboutButtonProps) {
     const copy = uiCopy[language];
     const dialogRef = useRef<HTMLDialogElement>(null);
     const installGuides = getInstallGuides(copy);
-    const buttonClassName = `${className ?? ''} inline-flex size-10 items-center justify-center rounded-full border border-white/10 bg-black/45 text-sm font-semibold text-white/90 backdrop-blur transition-colors hover:text-white`.trim();
+    const buttonClassName = `${className ?? ''} inline-flex items-center justify-center rounded-full border border-white/10 bg-black/45 text-sm font-semibold text-white/90 backdrop-blur transition-colors hover:border-white/20 hover:bg-black/60 hover:text-white ${label ? 'h-14 gap-2 px-6' : 'size-10'}`.trim();
 
     const closeDialog = () => {
         dialogRef.current?.close();
@@ -50,6 +52,7 @@ export default function AboutView({
                 aria-label={copy.aboutAria}
             >
                 <Info className="size-4"/>
+                {label}
             </button>
 
             <dialog

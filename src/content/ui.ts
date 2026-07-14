@@ -2,6 +2,9 @@ import type {LanguageCode} from '../types/wiki';
 
 export const uiCopy = {
     de: {
+        welcomeTitle: 'Willkommen bei Scrollpedia',
+        welcomeStart: 'Los geht\'s',
+        welcomeExplanation: 'Erklärung',
         languageLabel: 'Wikipedia Sprache',
         aboutAria: 'Informationen zur App anzeigen',
         aboutTitle: 'Was ist Scrollpedia?',
@@ -66,6 +69,7 @@ export const uiCopy = {
         changeSelectionAria: 'Zur Feed-Auswahl zurückkehren',
         backToFeed: 'Zurück',
         backToFeedAria: 'Zurück zum Feed',
+        backToWelcomeAria: 'Zum Welcome Screen zurückkehren',
         articleLoading: 'Artikel wird geladen...',
         articleLoadError:
             'Der vollständige Artikel konnte nicht geladen werden.',
@@ -75,6 +79,9 @@ export const uiCopy = {
         galleryImageLabel: 'Bild',
     },
     en: {
+        welcomeTitle: 'Welcome to Scrollpedia',
+        welcomeStart: 'Get started',
+        welcomeExplanation: 'Explanation',
         languageLabel: 'Wikipedia language',
         aboutAria: 'Show app information',
         aboutTitle: 'What is Scrollpedia?',
@@ -139,6 +146,7 @@ export const uiCopy = {
         changeSelectionAria: 'Return to feed selection',
         backToFeed: 'Back',
         backToFeedAria: 'Back to feed',
+        backToWelcomeAria: 'Return to welcome screen',
         articleLoading: 'Loading article...',
         articleLoadError: 'The full article could not be loaded.',
         readOnWikipedia: 'Continue on Wikipedia',

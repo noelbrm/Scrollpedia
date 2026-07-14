@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
   feedMode: 'wikitok.feedMode',
   language: 'wikitok.language',
   selectedTopics: 'wikitok.selectedTopics',
+  welcomeSeen: 'wikitok.welcomeSeen',
 } as const;
 
 const VALID_TOPIC_KEYS = new Set(topicEntries.map(([topicKey]) => topicKey));
@@ -13,6 +14,7 @@ const VALID_TOPIC_KEYS = new Set(topicEntries.map(([topicKey]) => topicKey));
 type StoredPreferences = {
   feedMode: FeedMode;
   hasStoredFeedMode: boolean;
+  hasSeenWelcome: boolean;
   language: LanguageCode;
   selectedTopics: TopicKey[];
 };
@@ -20,9 +22,14 @@ type StoredPreferences = {
 export function getStoredPreferences(): StoredPreferences {
   return {
     ...getStoredFeedMode(),
+    hasSeenWelcome: getLocalStorage()?.getItem(STORAGE_KEYS.welcomeSeen) === 'true',
     language: getStoredLanguage(),
     selectedTopics: getStoredTopics(),
   };
+}
+
+export function persistWelcomeSeen() {
+  getLocalStorage()?.setItem(STORAGE_KEYS.welcomeSeen, 'true');
 }
 
 export function persistFeedMode(feedMode: FeedMode) {

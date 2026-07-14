@@ -1,9 +1,8 @@
+import {ArrowLeft} from 'lucide-react';
 import type {TopicKey} from '../data/topics';
 import {topicEntries} from '../data/topics';
 import {uiCopy} from '../content/ui';
 import type {FeedMode, LanguageCode} from '../types/wiki';
-import AboutView from './AboutView';
-import GenreSelectionBackdrop from './GenreSelectionBackdrop';
 import LanguageSwitcher from './LanguageSwitcher';
 
 type GenreSelectionProps = {
@@ -11,6 +10,7 @@ type GenreSelectionProps = {
   language: LanguageCode;
   onFeedModeChange: (feedMode: FeedMode) => void;
   onLanguageChange: (language: LanguageCode) => void;
+  onBackToWelcome: () => void;
   selectedTopics: TopicKey[];
   onChange: (topics: TopicKey[]) => void;
   onContinue: () => void;
@@ -21,6 +21,7 @@ export default function GenreSelection({
   language,
   onFeedModeChange,
   onLanguageChange,
+  onBackToWelcome,
   selectedTopics,
   onChange,
   onContinue,
@@ -46,16 +47,18 @@ export default function GenreSelection({
   };
 
   return (
-    <section className="relative isolate min-h-dvh overflow-hidden bg-neutral-950">
-      <GenreSelectionBackdrop />
-      <div className="absolute inset-0 z-0 bg-black/42" />
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.13),rgba(0,0,0,0.5)_78%)]" />
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/27 via-black/42 to-black/62" />
-
-      <div className="relative z-10 flex min-h-dvh flex-col">
+    <div className="relative z-10 flex min-h-dvh flex-col">
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pt-12 sm:pt-16">
           <div className="flex items-center justify-between gap-2">
-            <AboutView language={language} />
+            <button
+              type="button"
+              onClick={onBackToWelcome}
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-2 text-sm font-medium text-white/90 backdrop-blur transition-colors hover:text-white"
+              aria-label={copy.backToWelcomeAria}
+            >
+              <ArrowLeft className="size-4" />
+              {copy.backToFeed}
+            </button>
             <LanguageSwitcher language={language} onChange={onLanguageChange} />
           </div>
 
@@ -108,7 +111,7 @@ export default function GenreSelection({
           </div>
         </div>
 
-        <div className="sticky bottom-0 w-full bg-gradient-to-t from-black via-black/90 to-black/0 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-8">
+        <div className="sticky bottom-0 w-full bg-gradient-to-t from-black via-black/90 to-black/0 px-5 pb-[max(3.5rem,env(safe-area-inset-bottom))] pt-8">
           <div className="mx-auto w-full max-w-md">
             <button
               type="button"
@@ -124,7 +127,6 @@ export default function GenreSelection({
             </button>
           </div>
         </div>
-      </div>
-    </section>
+    </div>
   );
 }
