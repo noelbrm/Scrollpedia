@@ -40,7 +40,11 @@ export async function loadTopicBatch(
       }
 
       try {
-        const fetchedArticles = await fetchGenrePool(topicKey, language, target);
+        const fetchedArticles = await fetchGenrePool(
+          topicKey,
+          language,
+          target - articles.length,
+        );
         const nextArticles = fetchedArticles.filter((article) => {
           const normalizedTitle = normalizeTitleKey(article.title);
 
@@ -142,5 +146,5 @@ async function fetchGenrePool(
     collected.push(...articles);
   }
 
-  return deduplicateFeedArticles(collected).slice(0, requestedPoolSize);
+  return deduplicateFeedArticles(collected);
 }

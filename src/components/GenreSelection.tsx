@@ -1,6 +1,6 @@
 import {ArrowLeft} from 'lucide-react';
 import type {TopicKey} from '../data/topics';
-import {topicEntries} from '../data/topics';
+import {MAX_SELECTED_TOPICS, topicEntries} from '../data/topics';
 import {uiCopy} from '../content/ui';
 import type {FeedMode, LanguageCode} from '../types/wiki';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -29,9 +29,14 @@ export default function GenreSelection({
   const copy = uiCopy[language];
   const isPopularSelected = feedMode === 'popular';
   const hasSelectedTopics = selectedTopics.length > 0;
+  const hasReachedTopicLimit = selectedTopics.length >= MAX_SELECTED_TOPICS;
   const canContinue = isPopularSelected || hasSelectedTopics;
 
   const toggleTopic = (topicKey: TopicKey) => {
+    if (!selectedTopics.includes(topicKey) && hasReachedTopicLimit) {
+      return;
+    }
+
     onFeedModeChange('topics');
 
     const nextTopics = selectedTopics.includes(topicKey)
@@ -88,16 +93,21 @@ export default function GenreSelection({
                   {topicEntries.map(([topicKey, topic]) => {
                     const isSelected =
                       feedMode === 'topics' && selectedTopics.includes(topicKey);
+                    const isDisabled = !isSelected && hasReachedTopicLimit;
 
                     return (
                       <button
                         key={topicKey}
                         type="button"
                         onClick={() => toggleTopic(topicKey)}
+                        disabled={isDisabled}
+                        aria-describedby="topic-limit-hint"
                         className={`rounded-full border px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-md transition-all duration-200 sm:text-base ${
                           isSelected
                             ? 'border-white bg-white/24 text-white shadow-[0_12px_28px_rgba(0,0,0,0.24)]'
-                            : 'border-white/10 bg-transparent text-white/92 hover:border-white/20 hover:text-white'
+                            : isDisabled
+                              ? 'cursor-not-allowed border-white/5 bg-transparent text-white/35'
+                              : 'border-white/10 bg-transparent text-white/92 hover:border-white/20 hover:text-white'
                         }`}
                         aria-pressed={isSelected}
                       >
@@ -106,6 +116,12 @@ export default function GenreSelection({
                     );
                   })}
                 </div>
+                <p
+                  id="topic-limit-hint"
+                  className="mt-4 text-center text-xs text-white/60"
+                >
+                  {copy.topicSelectionLimit}
+                </p>
               </div>
             </div>
           </div>

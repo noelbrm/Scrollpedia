@@ -1,5 +1,7 @@
 import type { ArticleTopic, Topic } from '../types/wiki';
 
+export const MAX_SELECTED_TOPICS = 3;
+
 function articleTopic(
   key: string,
   de: string,

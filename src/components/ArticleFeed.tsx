@@ -16,7 +16,7 @@ type ArticleFeedProps = {
 
 const INITIAL_BATCH_LIMIT = 12;
 const PRELOAD_BATCH_LIMIT = 8;
-const ROTATION_INTERVAL_MS = 3500;
+const ROTATION_INTERVAL_MS = 2000;
 
 export default function ArticleFeed({
                                         feedMode,

@@ -1,4 +1,4 @@
-import { topicEntries } from '../data/topics';
+import { MAX_SELECTED_TOPICS, topicEntries } from '../data/topics';
 import type { TopicKey } from '../data/topics';
 import type { FeedMode, LanguageCode } from '../types/wiki';
 
@@ -126,10 +126,15 @@ function getStoredTopics(): TopicKey[] {
       return [];
     }
 
-    return parsedTopics.filter(
-      (topicKey): topicKey is TopicKey =>
-        typeof topicKey === 'string' && VALID_TOPIC_KEYS.has(topicKey as TopicKey),
-    );
+    return Array.from(
+      new Set(
+        parsedTopics.filter(
+          (topicKey): topicKey is TopicKey =>
+            typeof topicKey === 'string' &&
+            VALID_TOPIC_KEYS.has(topicKey as TopicKey),
+        ),
+      ),
+    ).slice(0, MAX_SELECTED_TOPICS);
   } catch {
     return [];
   }

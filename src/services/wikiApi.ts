@@ -16,6 +16,10 @@ import {
 import { loadTopicBatch } from './wikiApi/discovery';
 import { getPopularWikipediaFeed } from './wikiApi/popular';
 import {
+  distributeBatchTargets,
+  interleaveBatches,
+} from './wikiApi/batching';
+import {
   extractArticleImages,
   extractReadableText,
   normalizeTitleKey,
@@ -35,7 +39,7 @@ export async function fetchArticlesByTopics(
     pools: {},
     seenTitles: [],
   };
-  let nextSession: WikiFeedSession = {
+  const nextSession: WikiFeedSession = {
     pools: topicKeys.reduce<WikiFeedSession['pools']>((pools, topicKey) => {
       pools[topicKey] = baseSession.pools[topicKey] ?? {
         articles: [],
@@ -66,35 +70,39 @@ export async function fetchArticlesByTopics(
       break;
     }
 
-    let roundMadeProgress = false;
+    const batchTargets = distributeBatchTargets(
+      limit - articles.length,
+      activeTopicKeys.length,
+    );
+    const topicsInBatch = activeTopicKeys.slice(0, batchTargets.length);
+    const consumeResults = await Promise.all(
+      topicsInBatch.map((topicKey, index) =>
+        loadTopicBatch(
+          topicKey,
+          batchTargets[index],
+          nextSession,
+          language,
+          seenTitleKeys,
+        ),
+      ),
+    );
+    const roundArticles = interleaveBatches(
+      consumeResults.map((result) => result.articles),
+    );
+    const roundMadeProgress = roundArticles.length > 0;
 
-    for (const topicKey of activeTopicKeys) {
-      const consumeResult = await loadTopicBatch(
-        topicKey,
-        1,
-        nextSession,
-        language,
-        seenTitleKeys,
-      );
+    articles.push(...roundArticles);
 
-      nextSession = consumeResult.session;
+    consumeResults.forEach((consumeResult, index) => {
       discoveryFailed = discoveryFailed || consumeResult.hadFetchFailure;
 
-      if (consumeResult.articles.length > 0) {
-        roundMadeProgress = true;
-        articles.push(...consumeResult.articles);
-      }
-
+      const topicKey = topicsInBatch[index];
       const pool = nextSession.pools[topicKey];
 
       if (!pool || (pool.articles.length === 0 && !pool.hasMore)) {
         exhaustedTopicKeys.add(topicKey);
       }
-
-      if (articles.length >= limit) {
-        break;
-      }
-    }
+    });
 
     if (
       !roundMadeProgress &&
@@ -105,7 +113,10 @@ export async function fetchArticlesByTopics(
       throw new Error('Artikel konnten gerade nicht geladen werden.');
     }
 
-    if (!roundMadeProgress) {
+    if (
+      !roundMadeProgress &&
+      topicsInBatch.length === activeTopicKeys.length
+    ) {
       break;
     }
   }
