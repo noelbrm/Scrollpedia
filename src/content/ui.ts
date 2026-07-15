@@ -4,7 +4,7 @@ export const uiCopy = {
     de: {
         welcomeTitle: 'Willkommen bei Scrollpedia',
         welcomeStart: 'Los geht\'s',
-        welcomeExplanation: 'Erklärung',
+        welcomeExplanation: 'So funktioniert\'s',
         languageLabel: 'Wikipedia Sprache',
         aboutAria: 'Informationen zur App anzeigen',
         aboutTitle: 'Was ist Scrollpedia?',
@@ -81,7 +81,7 @@ export const uiCopy = {
     en: {
         welcomeTitle: 'Welcome to Scrollpedia',
         welcomeStart: 'Get started',
-        welcomeExplanation: 'Explanation',
+        welcomeExplanation: 'How to use',
         languageLabel: 'Wikipedia language',
         aboutAria: 'Show app information',
         aboutTitle: 'What is Scrollpedia?',

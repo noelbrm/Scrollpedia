@@ -50,7 +50,16 @@ export default function WelcomeScreen({
           language={language}
         />
         <footer className="mt-1 text-center text-[0.68rem] text-white/40">
-          {copy.aboutMeDescription}
+          {language === 'de' ? 'Erstellt von ' : 'Created by '}
+          <a
+            href="https://github.com/noelbrm/Scrollpedia"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/60 underline decoration-white/25 underline-offset-2 transition-colors hover:text-white"
+          >
+            Noel Bromkamp
+          </a>
+          .
         </footer>
       </div>
     </div>
