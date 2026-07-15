@@ -94,14 +94,16 @@ function getStoredFeedMode(): {
 }
 
 function getStoredLanguage(): LanguageCode {
-  const storage = getLocalStorage();
+  const storedLanguage = getLocalStorage()?.getItem(STORAGE_KEYS.language);
 
-  if (!storage) {
-    return 'de';
+  if (storedLanguage === 'en' || storedLanguage === 'de') {
+    return storedLanguage;
   }
 
-  const storedLanguage = storage.getItem(STORAGE_KEYS.language);
-  return storedLanguage === 'en' || storedLanguage === 'de' ? storedLanguage : 'de';
+  return typeof navigator !== 'undefined' &&
+    new Intl.Locale(navigator.language).region === 'DE'
+    ? 'de'
+    : 'en';
 }
 
 function getStoredTopics(): TopicKey[] {
