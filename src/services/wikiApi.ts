@@ -41,9 +41,10 @@ export async function fetchArticlesByTopics(
   };
   const nextSession: WikiFeedSession = {
     pools: topicKeys.reduce<WikiFeedSession['pools']>((pools, topicKey) => {
-      pools[topicKey] = baseSession.pools[topicKey] ?? {
-        articles: [],
-        hasMore: true,
+      const pool = baseSession.pools[topicKey];
+      pools[topicKey] = {
+        articles: [...(pool?.articles ?? [])],
+        hasMore: pool?.hasMore ?? true,
       };
       return pools;
     }, {} as WikiFeedSession['pools']),
@@ -99,19 +100,14 @@ export async function fetchArticlesByTopics(
       const topicKey = topicsInBatch[index];
       const pool = nextSession.pools[topicKey];
 
-      if (!pool || (pool.articles.length === 0 && !pool.hasMore)) {
+      if (
+        consumeResult.hadFetchFailure ||
+        !pool ||
+        (pool.articles.length === 0 && !pool.hasMore)
+      ) {
         exhaustedTopicKeys.add(topicKey);
       }
     });
-
-    if (
-      !roundMadeProgress &&
-      discoveryFailed &&
-      articles.length === 0 &&
-      !hasRemainingDiscovery(nextSession, topicKeys)
-    ) {
-      throw new Error('Artikel konnten gerade nicht geladen werden.');
-    }
 
     if (
       !roundMadeProgress &&
@@ -123,11 +119,7 @@ export async function fetchArticlesByTopics(
 
   nextSession.seenTitles = Array.from(seenTitleKeys);
 
-  if (
-    articles.length === 0 &&
-    discoveryFailed &&
-    !hasRemainingDiscovery(nextSession, topicKeys)
-  ) {
+  if (articles.length === 0 && discoveryFailed) {
     throw new Error('Artikel konnten gerade nicht geladen werden.');
   }
 

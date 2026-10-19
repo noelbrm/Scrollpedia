@@ -7,34 +7,30 @@ export function encodeTitle(title: string): string {
 }
 
 export async function fetchJson<T>(url: string | URL): Promise<T> {
-  const response = await fetchWithTimeout(url);
-
-  if (!response.ok) {
-    throw new Error(API_ERROR_MESSAGE);
-  }
-
-  const data = (await response.json().catch(() => {
-    throw new Error(API_ERROR_MESSAGE);
-  })) as T;
-
-  if (hasApiError(data)) {
-    throw new Error(API_ERROR_MESSAGE);
-  }
-
-  return data;
-}
-
-async function fetchWithTimeout(url: string | URL): Promise<Response> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
   try {
-    return await fetch(url, {
+    const response = await fetch(url, {
       headers: {
         Accept: 'application/json',
       },
       signal: controller.signal,
     });
+
+    if (!response.ok) {
+      throw new Error(API_ERROR_MESSAGE);
+    }
+
+    const data = (await response.json().catch(() => {
+      throw new Error(API_ERROR_MESSAGE);
+    })) as T;
+
+    if (hasApiError(data)) {
+      throw new Error(API_ERROR_MESSAGE);
+    }
+
+    return data;
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
       throw new Error(API_ERROR_MESSAGE);

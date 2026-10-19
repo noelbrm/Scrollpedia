@@ -22,44 +22,26 @@ type StoredPreferences = {
 export function getStoredPreferences(): StoredPreferences {
   return {
     ...getStoredFeedMode(),
-    hasSeenWelcome: getLocalStorage()?.getItem(STORAGE_KEYS.welcomeSeen) === 'true',
+    hasSeenWelcome: getStoredItem(STORAGE_KEYS.welcomeSeen) === 'true',
     language: getStoredLanguage(),
     selectedTopics: getStoredTopics(),
   };
 }
 
 export function persistWelcomeSeen() {
-  getLocalStorage()?.setItem(STORAGE_KEYS.welcomeSeen, 'true');
+  persistItem(STORAGE_KEYS.welcomeSeen, 'true');
 }
 
 export function persistFeedMode(feedMode: FeedMode) {
-  const storage = getLocalStorage();
-
-  if (!storage) {
-    return;
-  }
-
-  storage.setItem(STORAGE_KEYS.feedMode, feedMode);
+  persistItem(STORAGE_KEYS.feedMode, feedMode);
 }
 
 export function persistLanguage(language: LanguageCode) {
-  const storage = getLocalStorage();
-
-  if (!storage) {
-    return;
-  }
-
-  storage.setItem(STORAGE_KEYS.language, language);
+  persistItem(STORAGE_KEYS.language, language);
 }
 
 export function persistSelectedTopics(selectedTopics: TopicKey[]) {
-  const storage = getLocalStorage();
-
-  if (!storage) {
-    return;
-  }
-
-  storage.setItem(
+  persistItem(
     STORAGE_KEYS.selectedTopics,
     JSON.stringify(selectedTopics),
   );
@@ -69,16 +51,7 @@ function getStoredFeedMode(): {
   feedMode: FeedMode;
   hasStoredFeedMode: boolean;
 } {
-  const storage = getLocalStorage();
-
-  if (!storage) {
-    return {
-      feedMode: 'popular',
-      hasStoredFeedMode: false,
-    };
-  }
-
-  const storedFeedMode = storage.getItem(STORAGE_KEYS.feedMode);
+  const storedFeedMode = getStoredItem(STORAGE_KEYS.feedMode);
 
   if (storedFeedMode === 'popular' || storedFeedMode === 'topics') {
     return {
@@ -94,26 +67,20 @@ function getStoredFeedMode(): {
 }
 
 function getStoredLanguage(): LanguageCode {
-  const storedLanguage = getLocalStorage()?.getItem(STORAGE_KEYS.language);
+  const storedLanguage = getStoredItem(STORAGE_KEYS.language);
 
   if (storedLanguage === 'en' || storedLanguage === 'de') {
     return storedLanguage;
   }
 
   return typeof navigator !== 'undefined' &&
-    new Intl.Locale(navigator.language).region === 'DE'
+    new Intl.Locale(navigator.language).language === 'de'
     ? 'de'
     : 'en';
 }
 
 function getStoredTopics(): TopicKey[] {
-  const storage = getLocalStorage();
-
-  if (!storage) {
-    return [];
-  }
-
-  const storedTopics = storage.getItem(STORAGE_KEYS.selectedTopics);
+  const storedTopics = getStoredItem(STORAGE_KEYS.selectedTopics);
 
   if (!storedTopics) {
     return [];
@@ -140,10 +107,20 @@ function getStoredTopics(): TopicKey[] {
   }
 }
 
-function getLocalStorage(): Storage | null {
-  if (typeof window === 'undefined') {
+function getStoredItem(key: string): string | null {
+  try {
+    return typeof window === 'undefined' ? null : window.localStorage.getItem(key);
+  } catch {
     return null;
   }
+}
 
-  return window.localStorage;
+function persistItem(key: string, value: string) {
+  try {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(key, value);
+    }
+  } catch {
+    // Preferences remain usable in memory when browser storage is unavailable.
+  }
 }

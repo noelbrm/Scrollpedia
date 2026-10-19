@@ -59,6 +59,7 @@ export const uiCopy = {
         preparingPopularDescription:
             'Der aktuelle Feed mit meistgesehenen Artikeln wird vorbereitet.',
         loadingMore: 'Mehr Artikel werden geladen',
+        retryLoadingMore: 'Artikel erneut laden',
         loadingAriaLabel: 'Artikel werden geladen',
         loadingTitle: 'Artikel werden geladen',
         loadingPopularLine: 'Meistgesehene Artikel werden geladen...',
@@ -78,6 +79,7 @@ export const uiCopy = {
         enableDarkMode: 'Dark Mode aktivieren',
         enableLightMode: 'Light Mode aktivieren',
         galleryImageLabel: 'Bild',
+        enlargeImage: 'Bild vergrößern',
     },
     en: {
         welcomeTitle: 'Welcome to Scrollpedia',
@@ -137,6 +139,7 @@ export const uiCopy = {
         preparingPopularDescription:
             'The current most-viewed articles feed is being prepared.',
         loadingMore: 'Loading more articles',
+        retryLoadingMore: 'Retry loading articles',
         loadingAriaLabel: 'Articles are loading',
         loadingTitle: 'Articles are loading',
         loadingPopularLine: 'Most-viewed articles are loading...',
@@ -155,5 +158,6 @@ export const uiCopy = {
         enableDarkMode: 'Enable dark mode',
         enableLightMode: 'Enable light mode',
         galleryImageLabel: 'Image',
+        enlargeImage: 'Enlarge image',
     },
 } satisfies Record<LanguageCode, Record<string, string>>;

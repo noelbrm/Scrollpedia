@@ -33,6 +33,7 @@ export default function ArticleFeed({
     const [currentTopicIndex, setCurrentTopicIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [preloadFailed, setPreloadFailed] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const feedRef = useRef<HTMLElement | null>(null);
@@ -98,7 +99,7 @@ export default function ArticleFeed({
     }, [rotatingTopics]);
 
     const loadMoreArticles = useCallback(async () => {
-        if (isLoading || isLoadingMore || error || !hasMore) {
+        if (isLoading || isLoadingMore || preloadFailed || error || !hasMore) {
             return;
         }
 
@@ -122,13 +123,15 @@ export default function ArticleFeed({
 
             setArticles((current) => [...current, ...result.articles]);
         } catch {
-            // Keep the feed alive after transient preload failures.
+            if (requestIdRef.current === activeRequestId) {
+                setPreloadFailed(true);
+            }
         } finally {
             if (requestIdRef.current === activeRequestId) {
                 setIsLoadingMore(false);
             }
         }
-    }, [error, feedMode, fetchFeedBatch, hasMore, isLoading, isLoadingMore]);
+    }, [error, feedMode, fetchFeedBatch, hasMore, isLoading, isLoadingMore, preloadFailed]);
 
     useEffect(() => {
         const currentRequestId = requestIdRef.current + 1;
@@ -139,6 +142,7 @@ export default function ArticleFeed({
         setArticles([]);
         setHasMore(true);
         setIsLoadingMore(false);
+        setPreloadFailed(false);
 
         async function loadArticles() {
             setIsLoading(true);
@@ -288,6 +292,17 @@ export default function ArticleFeed({
                         className="rounded-full border border-white/10 bg-black/70 px-4 py-2 text-sm text-white/80 backdrop-blur">
                         {copy.loadingMore}
                     </div>
+                </div>
+            ) : null}
+            {!isLoading && !error && preloadFailed ? (
+                <div className="sticky bottom-0 z-20 flex justify-center px-4 pb-6">
+                    <button
+                        type="button"
+                        onClick={() => setPreloadFailed(false)}
+                        className="rounded-full border border-white/10 bg-black/90 px-4 py-2 text-sm text-white backdrop-blur"
+                    >
+                        {copy.retryLoadingMore}
+                    </button>
                 </div>
             ) : null}
         </section>

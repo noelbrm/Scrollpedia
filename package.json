@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "node --require ./tests/register.cjs --test tests/*.test.cjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint ."

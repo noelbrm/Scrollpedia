@@ -53,6 +53,14 @@ npm run dev
 npm run build
 ```
 
+### Checks
+
+```bash
+npm test
+npm run lint
+npm run build
+```
+
 ## Project Structure
 
 - `src/` application code, UI components, feed logic, and Wikipedia API integration
