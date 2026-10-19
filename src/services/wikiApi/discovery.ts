@@ -59,7 +59,6 @@ export async function loadTopicBatch(
         pool.hasMore = nextArticles.length > 0;
       } catch {
         hadFetchFailure = true;
-        pool.hasMore = false;
         break;
       }
     }

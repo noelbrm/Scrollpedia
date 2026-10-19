@@ -84,7 +84,7 @@ export async function getPopularWikipediaFeed({
           candidateTitles,
           cursor: 0,
           dayKey: utcDay.dayKey,
-          seenTitles: [],
+          seenTitles: [...(session?.seenTitles ?? [])],
         };
   const articles: WikiFeedArticle[] = [];
   const seenTitleKeys = new Set(

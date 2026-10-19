@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {ArrowLeft, ExternalLink, Moon, Sun, X} from 'lucide-react';
 import {uiCopy} from '../content/ui';
 import {fetchFullArticle} from '../services/wikiApi';
@@ -21,12 +21,28 @@ export default function ArticleDetailView({
     const [error, setError] = useState<string | null>(null);
     const [isLightMode, setIsLightMode] = useState(false);
     const [expandedImage, setExpandedImage] = useState<string | null>(null);
+    const dialogRef = useRef<HTMLDialogElement>(null);
+    const imageDialogRef = useRef<HTMLDialogElement>(null);
     const themeLabel = isLightMode ? copy.enableDarkMode : copy.enableLightMode;
     const articleText = fullArticle?.extract ?? article.extract;
     const paragraphs = articleText.split('\n\n').filter(Boolean);
     const galleryImages = Array.from(
         new Set([article.image, ...(fullArticle?.images ?? [])].filter(Boolean)),
     ) as string[];
+
+    useEffect(() => {
+        const dialog = dialogRef.current;
+        dialog?.showModal();
+        return () => dialog?.close();
+    }, []);
+
+    useEffect(() => {
+        const dialog = imageDialogRef.current;
+        if (expandedImage) {
+            dialog?.showModal();
+        }
+        return () => dialog?.close();
+    }, [expandedImage]);
 
     useEffect(() => {
         let shouldIgnore = false;
@@ -60,8 +76,13 @@ export default function ArticleDetailView({
     }, [article.title, copy.articleLoadError, language]);
 
     return (
-        <section
-            className={`fixed inset-0 z-50 overflow-y-auto transition-colors ${
+        <dialog
+            ref={dialogRef}
+            aria-label={article.title}
+            onClose={() => {
+                if (!dialogRef.current?.open) onBack();
+            }}
+            className={`fixed inset-0 z-50 m-0 h-full max-h-none w-full max-w-none overflow-y-auto border-0 p-0 transition-colors ${
                 isLightMode ? 'bg-stone-100 text-neutral-950' : 'bg-neutral-950 text-white'
             }`}
         >
@@ -75,7 +96,7 @@ export default function ArticleDetailView({
                 >
                     <button
                         type="button"
-                        onClick={onBack}
+                        onClick={() => dialogRef.current?.close()}
                         className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-colors ${
                             isLightMode
                                 ? 'border border-black/10 bg-black/5 text-neutral-900'
@@ -120,8 +141,11 @@ export default function ArticleDetailView({
 
                     {galleryImages.length > 0 ? (
                         <div className="space-y-3">
-                            <div
-                                className={`overflow-hidden rounded-[2rem] border ${
+                            <button
+                                type="button"
+                                aria-label={`${copy.enlargeImage}: ${article.title}`}
+                                onClick={() => setExpandedImage(galleryImages[0])}
+                                className={`block w-full overflow-hidden rounded-[2rem] border ${
                                     isLightMode ? 'border-black/10 bg-white/70' : 'border-white/10 bg-white/[0.03]'
                                 }`}
                             >
@@ -129,14 +153,16 @@ export default function ArticleDetailView({
                                     src={galleryImages[0]}
                                     alt={article.title}
                                     className="h-[18rem] w-full cursor-zoom-in object-cover"
-                                    onClick={() => setExpandedImage(galleryImages[0])}
                                 />
-                            </div>
+                            </button>
                             {galleryImages.length > 1 ? (
                                 <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1">
                                     {galleryImages.slice(1).map((imageUrl, index) => (
-                                        <div
+                                        <button
                                             key={`${imageUrl}-${index}`}
+                                            type="button"
+                                            aria-label={`${copy.enlargeImage}: ${article.title} ${copy.galleryImageLabel} ${index + 2}`}
+                                            onClick={() => setExpandedImage(imageUrl)}
                                             className={`min-w-[12rem] snap-start overflow-hidden rounded-[1.5rem] border ${
                                                 isLightMode ? 'border-black/10 bg-white/70' : 'border-white/10 bg-white/[0.03]'
                                             }`}
@@ -145,9 +171,8 @@ export default function ArticleDetailView({
                                                 src={imageUrl}
                                                 alt={`${article.title} ${copy.galleryImageLabel} ${index + 2}`}
                                                 className="h-40 w-full cursor-zoom-in object-cover"
-                                                onClick={() => setExpandedImage(imageUrl)}
                                             />
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
                             ) : null}
@@ -212,9 +237,16 @@ export default function ArticleDetailView({
                 </div>
             </div>
             {expandedImage ? (
-                <div
-                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 p-2 sm:p-4"
-                    onClick={() => setExpandedImage(null)}
+                <dialog
+                    ref={imageDialogRef}
+                    aria-label={`${copy.enlargeImage}: ${article.title}`}
+                    className="fixed inset-0 z-[60] m-0 h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/95 p-2 open:flex sm:p-4"
+                    onClose={() => {
+                        if (!imageDialogRef.current?.open) setExpandedImage(null);
+                    }}
+                    onClick={(event) => {
+                        if (event.target === event.currentTarget) imageDialogRef.current?.close();
+                    }}
                 >
                     <div
                         className="relative flex w-full items-center justify-center md:w-[767px]"
@@ -222,7 +254,7 @@ export default function ArticleDetailView({
                     >
                         <button
                             type="button"
-                            onClick={() => setExpandedImage(null)}
+                            onClick={() => imageDialogRef.current?.close()}
                             className="absolute right-2 top-2 z-10 inline-flex items-center justify-center rounded-full border border-white/10 bg-white/10 p-2 text-white transition-colors hover:bg-white/15 sm:right-4 sm:top-4"
                             aria-label={copy.aboutClose}
                         >
@@ -234,8 +266,8 @@ export default function ArticleDetailView({
                             className="max-h-[96vh] w-full object-contain"
                         />
                     </div>
-                </div>
+                </dialog>
             ) : null}
-        </section>
+        </dialog>
     );
 }
